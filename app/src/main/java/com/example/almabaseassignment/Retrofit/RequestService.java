@@ -15,6 +15,6 @@ public interface RequestService {
     @GET("/orgs/{org}/repos?per_page=5000")
     Call<List<Repo>> requestGet(@Path("org") String org);
 
-    @GET("/repos/{org}/{repo}/contributors")
+    @GET("/repos/{org}/{repo}/contributors?per_page=5000")
     Call<List<Commit>> requestCommit(@Path("org") String org,@Path("repo") String repo);
 }

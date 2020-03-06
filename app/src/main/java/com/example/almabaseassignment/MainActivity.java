@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.almabaseassignment.Models.Repo;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final RecyclerView recyclerView=findViewById(R.id.recyclerView);
+        final ProgressBar progressBar=findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         final EditText editText_org=findViewById(R.id.organization);
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
                 else
                 {
+                    progressBar.setVisibility(View.VISIBLE);
                     Retrofit retrofit = NetworkClient.getRetrofitClient();
                     final RequestService requestService=retrofit.create(RequestService.class);
                     Call<List<Repo>> call=requestService.requestGet(org);
@@ -66,11 +70,19 @@ public class MainActivity extends AppCompatActivity {
                     call.enqueue(new Callback<List<Repo>>() {
                         @Override
                         public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
-                            recyclerView.setAdapter(null);
-                            repo_response=new ArrayList<>(response.body());
-                            Collections.sort(repo_response);
-                            repo_response= new ArrayList<Repo>(repo_response.subList(0,Integer.parseInt(repo)));
-                            recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(),repo_response));
+                            progressBar.setVisibility(View.INVISIBLE);
+                            if(response.body()==null)
+                            {
+                                Toast.makeText(getApplicationContext(),"Enter Valid Organization",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                repo_response=new ArrayList<>(response.body());
+                                Collections.sort(repo_response);
+                                if(Integer.parseInt(repo)<repo_response.size())
+                                    repo_response= new ArrayList<Repo>(repo_response.subList(0,Integer.parseInt(repo)));
+                                recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(),repo_response));
+                            }
                         }
 
                         @Override
