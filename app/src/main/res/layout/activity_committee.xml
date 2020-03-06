@@ -4,33 +4,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/rl"
     android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/top"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/edittext_commit"
+                android:layout_margin="8dp"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="Number of Committees"/>
+
+            <Button
+                android:id="@+id/search_commit"
+                android:padding="8dp"
+                android:text="Search"
+                android:textSize="16sp"
+                android:layout_margin="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"/>
+        </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/middle"
+        android:layout_marginTop="150dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".Committee"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/edittext_commit"
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:hint="Number of Committees"/>
-
-        <Button
-            android:id="@+id/search_commit"
-            android:layout_width="match_parent"
-            android:layout_margin="8dp"
-            android:layout_height="wrap_content"
-            android:text="Search"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/colorPrimaryDark" />
 
         <LinearLayout
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal">
@@ -58,7 +74,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="center"
                 android:textStyle="bold|italic"
-                android:text="Commiter"
+                android:text="Committer"
                 android:gravity="center"/>
 
             <!--        <View-->
@@ -82,17 +98,17 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/colorPrimaryDark" />
+    </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:padding="8dp"
+            android:layout_below="@id/middle"
             android:id="@+id/recyclerView_commit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
-
     <ProgressBar
-        android:id="@+id/prog"
+        android:id="@+id/prog11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>

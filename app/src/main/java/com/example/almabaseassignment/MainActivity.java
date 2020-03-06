@@ -4,12 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.almabaseassignment.Models.Repo;
@@ -28,17 +33,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.view.View.VISIBLE;
+
 public class MainActivity extends AppCompatActivity {
     ArrayList<Repo> repo_response = new ArrayList<>();
+    LinearLayout home;
+    RelativeLayout relativeLayout;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        home=findViewById(R.id.home);
+        relativeLayout=findViewById(R.id.relativeLayout);
         final RecyclerView recyclerView=findViewById(R.id.recyclerView);
-        final ProgressBar progressBar=findViewById(R.id.progressbar);
+        progressBar=findViewById(R.id.progressbar);
         progressBar.setVisibility(View.INVISIBLE);
+        final LinearLayout linearLayout=findViewById(R.id.header);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         final EditText editText_org=findViewById(R.id.organization);
@@ -62,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                 else
                 {
+                    startAnimation();
                     progressBar.setVisibility(View.VISIBLE);
                     Retrofit retrofit = NetworkClient.getRetrofitClient();
                     final RequestService requestService=retrofit.create(RequestService.class);
@@ -77,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else
                             {
+                                linearLayout.setVisibility(View.VISIBLE);
                                 repo_response=new ArrayList<>(response.body());
                                 Collections.sort(repo_response);
                                 if(Integer.parseInt(repo)<repo_response.size())
@@ -87,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<List<Repo>> call, Throwable t) {
+                            progressBar.setVisibility(View.INVISIBLE);
                             Log.e("Failure", "onFailure: "+t.getMessage());
                         }
                     });
@@ -95,5 +110,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void startAnimation() {
+        ViewPropertyAnimator viewPropertyAnimator = home.animate();
+        viewPropertyAnimator.x(0f);
+        viewPropertyAnimator.y(0f);
+        viewPropertyAnimator.setDuration(1000);
+        viewPropertyAnimator.setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        RelativeLayout.LayoutParams rLParams =
+                new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rLParams.addRule(RelativeLayout.ALIGN_PARENT_START, 1);
+        relativeLayout.removeView(home);
+        relativeLayout.addView(home,rLParams);
     }
 }
