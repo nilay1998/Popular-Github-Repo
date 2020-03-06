@@ -1,9 +1,11 @@
 package com.example.almabaseassignment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,9 +35,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, final int position) {
         holder.repo_name.setText(mRepo.get(position).getName());
         holder.fork.setText(mRepo.get(position).getForks_count());
+
+        holder.repo_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(mContext,Committee.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("link",mRepo.get(position).getContributors_url());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -45,10 +57,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
+        LinearLayout repo_layout;
         TextView repo_name;
         TextView fork;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            repo_layout=itemView.findViewById(R.id.repo_layout);
             repo_name=itemView.findViewById(R.id.repo_name);
             fork=itemView.findViewById(R.id.fork);
         }

@@ -1,5 +1,6 @@
 package com.example.almabaseassignment.Retrofit;
 
+import com.example.almabaseassignment.Models.Commit;
 import com.example.almabaseassignment.Models.Repo;
 
 import java.util.List;
@@ -13,4 +14,7 @@ public interface RequestService {
 
     @GET("/orgs/{org}/repos?per_page=5000")
     Call<List<Repo>> requestGet(@Path("org") String org);
+
+    @GET("/repos/{org}/{repo}/contributors")
+    Call<List<Commit>> requestCommit(@Path("org") String org,@Path("repo") String repo);
 }

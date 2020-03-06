@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.e("HELLO", "onCreate: "+editText_org.getText().toString());
-                
+
                 final String org=editText_org.getText().toString();
                 final String repo=editText_repo.getText().toString();
 
