@@ -11,10 +11,10 @@ Based on the number of forks on each repo, I have sorted and displayed then on t
 ## Screenshots
 This is the home page where you enter the organization's name and the number of repositories you wish to see.
 
-<img src="Screenshots/Screenshot_1.png" width="250" />
+<img src="Screenshots/Screenshot_1.png" width="250" /> \
 
-Result of above query. You can tap on any of the item to find the top committes.
-<img src="Screenshots/Screenshot_2.png" width="250" />
+Result of above query. You can tap on any of the item to find the top committes.\
+<img src="Screenshots/Screenshot_2.png" width="250" /> \
 
-These are the top committes on a particular repository.
+These are the top committes on a particular repository. \
 <img src="Screenshots/Screenshot_3.png" width="250" />
