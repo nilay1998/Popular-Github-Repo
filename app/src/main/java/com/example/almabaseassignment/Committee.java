@@ -41,6 +41,9 @@ public class Committee extends AppCompatActivity {
     RecyclerView recyclerView;
     EditText editText_commit;
     Button button;
+    String commit_old="-999";
+    String commit_new;
+    String[] paths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,51 +57,70 @@ public class Committee extends AppCompatActivity {
         setTitle(intent.getStringExtra("name"));
 
         url=url.substring(23);
-        final String[] paths=url.split("/");
+        paths=url.split("/");
+
 
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(editText_commit.getText().toString()==null || editText_commit.getText().toString().isEmpty())
-                    Toast.makeText(getApplicationContext(),"Enter Commiter Count",Toast.LENGTH_SHORT).show();
+                commit_new=editText_commit.getText().toString();
+
+                if(!commit_new.equals(commit_old))
+                {
+                    if(commit_new==null || commit_new.isEmpty())
+                        Toast.makeText(getApplicationContext(),"Enter Commiter Count",Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        if(commit_old.equals("-999"))
+                        {
+                            startAnimation();
+                            getCommits();
+                        }
+                        else
+                        {
+                            if(Integer.parseInt(commit_new)>commit_response.size())
+                                commit_new=String.valueOf(commit_response.size());
+                            recyclerView.setAdapter(new CommitViewAdapter(getApplicationContext(),new ArrayList<>(commit_response.subList(0,Integer.parseInt(editText_commit.getText().toString())))));
+                        }
+                    }
+                }
+                commit_old=commit_new;
+            }
+        });
+    }
+
+    private void getCommits()
+    {
+        progressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        final RequestService requestService=retrofit.create(RequestService.class);
+        Call<List<Commit>> call=requestService.requestCommit(paths[1],paths[2]);
+
+        call.enqueue(new Callback<List<Commit>>() {
+            @Override
+            public void onResponse(Call<List<Commit>> call, Response<List<Commit>> response) {
+                if(response.body()==null)
+                {
+                    Toast.makeText(getApplicationContext(),"No contributers exists",Toast.LENGTH_SHORT).show();
+                }
                 else
                 {
-                    startAnimation();
-                    progressBar.setVisibility(View.VISIBLE);
-                    Retrofit retrofit = NetworkClient.getRetrofitClient();
-                    final RequestService requestService=retrofit.create(RequestService.class);
-                    Call<List<Commit>> call=requestService.requestCommit(paths[1],paths[2]);
+                    middle.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
 
-                    call.enqueue(new Callback<List<Commit>>() {
-                        @Override
-                        public void onResponse(Call<List<Commit>> call, Response<List<Commit>> response) {
-                            if(response.body()==null)
-                            {
-                                Toast.makeText(getApplicationContext(),"No contributers exists",Toast.LENGTH_SHORT).show();
-                            }
-                            else
-                            {
-                                middle.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.GONE);
-
-                                commit_response=new ArrayList<>(response.body());
-                                if(Integer.parseInt(editText_commit.getText().toString())<commit_response.size())
-                                    commit_response=new ArrayList<>(commit_response.subList(0,Integer.parseInt(editText_commit.getText().toString())));
-                                recyclerView.setAdapter(new CommitViewAdapter(getApplicationContext(),commit_response));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Commit>> call, Throwable t) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
-                            Log.e("HEYY", "onFailure: "+t.getMessage());
-                        }
-                    });
+                    commit_response=new ArrayList<>(response.body());
+                    if(Integer.parseInt(commit_new)>commit_response.size())
+                        commit_new=String.valueOf(commit_response.size());
+                    recyclerView.setAdapter(new CommitViewAdapter(getApplicationContext(),new ArrayList<>(commit_response.subList(0,Integer.parseInt(commit_new)))));
                 }
+            }
 
-
+            @Override
+            public void onFailure(Call<List<Commit>> call, Throwable t) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
+                Log.e("HEYY", "onFailure: "+t.getMessage());
             }
         });
     }

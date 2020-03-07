@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     Button search;
     RecyclerView recyclerView;
 
+    String org_old="-999";
+    String repo_old="-999";
+    String org_new;
+    String repo_new;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,53 +58,72 @@ public class MainActivity extends AppCompatActivity {
 
         initviews();
 
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String org=editText_org.getText().toString();
-                final String repo=editText_repo.getText().toString();
+                org_new=editText_org.getText().toString();
+                repo_new=editText_repo.getText().toString();
 
-                if(org==null || org.isEmpty())
-                    Toast.makeText(getApplicationContext(),"Enter Organization's Name",Toast.LENGTH_SHORT).show();
-                else if(repo==null || repo.isEmpty())
-                    Toast.makeText(getApplicationContext(),"Enter Repo Count",Toast.LENGTH_SHORT).show();
+                if(!org_old.equals(org_new))
+                {
+                    recyclerView.setAdapter(null);
 
+                    if(org_new==null || org_new.isEmpty())
+                        Toast.makeText(getApplicationContext(),"Enter Organization's Name",Toast.LENGTH_SHORT).show();
+                    else if(repo_new==null || repo_new.isEmpty())
+                        Toast.makeText(getApplicationContext(),"Enter Repo Count",Toast.LENGTH_SHORT).show();
+
+                    else
+                    {
+                        if(org_old.equals("-999"))
+                            startAnimation();
+
+                        progressBar.setVisibility(View.VISIBLE);
+                        Retrofit retrofit = NetworkClient.getRetrofitClient();
+                        final RequestService requestService=retrofit.create(RequestService.class);
+                        Call<List<Repo>> call=requestService.requestGet(org_new);
+
+                        call.enqueue(new Callback<List<Repo>>() {
+                            @Override
+                            public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                if(response.body()==null)
+                                {
+                                    Toast.makeText(getApplicationContext(),"Enter Valid Organization",Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    linearLayout.setVisibility(View.VISIBLE);
+                                    repo_response=new ArrayList<>(response.body());
+                                    Collections.sort(repo_response);
+                                    if(Integer.parseInt(repo_new)>repo_response.size())
+                                        repo_new=String.valueOf(repo_response.size());
+                                    recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(),new ArrayList<Repo>(repo_response.subList(0,Integer.parseInt(repo_new)))));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Repo>> call, Throwable t) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
+                                Log.e("Failure", "onFailure: "+t.getMessage());
+                            }
+                        });
+                    }
+                }
                 else
                 {
-                    startAnimation();
-                    progressBar.setVisibility(View.VISIBLE);
-                    Retrofit retrofit = NetworkClient.getRetrofitClient();
-                    final RequestService requestService=retrofit.create(RequestService.class);
-                    Call<List<Repo>> call=requestService.requestGet(org);
-
-                    call.enqueue(new Callback<List<Repo>>() {
-                        @Override
-                        public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            if(response.body()==null)
-                            {
-                                Toast.makeText(getApplicationContext(),"Enter Valid Organization",Toast.LENGTH_SHORT).show();
-                            }
-                            else
-                            {
-                                linearLayout.setVisibility(View.VISIBLE);
-                                repo_response=new ArrayList<>(response.body());
-                                Collections.sort(repo_response);
-                                if(Integer.parseInt(repo)<repo_response.size())
-                                    repo_response= new ArrayList<Repo>(repo_response.subList(0,Integer.parseInt(repo)));
-                                recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(),repo_response));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Repo>> call, Throwable t) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
-                            Log.e("Failure", "onFailure: "+t.getMessage());
-                        }
-                    });
+                    if(!repo_old.equals(repo_new))
+                    {
+                        if(Integer.parseInt(repo_new)>repo_response.size())
+                            repo_new=String.valueOf(repo_response.size());
+                        recyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(),new ArrayList<Repo>(repo_response.subList(0,Integer.parseInt(repo_new)))));
+                    }
                 }
 
+                org_old=org_new;
+                repo_old=repo_new;
             }
         });
 
@@ -111,8 +135,9 @@ public class MainActivity extends AppCompatActivity {
 
         relativeLayout=findViewById(R.id.relativeLayout);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView=findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
 
         progressBar=findViewById(R.id.progressbar);
         progressBar.setVisibility(View.INVISIBLE);
