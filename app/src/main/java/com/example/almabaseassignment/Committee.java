@@ -81,7 +81,7 @@ public class Committee extends AppCompatActivity {
                         {
                             if(Integer.parseInt(commit_new)>commit_response.size())
                                 commit_new=String.valueOf(commit_response.size());
-                            recyclerView.setAdapter(new CommitViewAdapter(getApplicationContext(),new ArrayList<>(commit_response.subList(0,Integer.parseInt(editText_commit.getText().toString())))));
+                            recyclerView.setAdapter(new CommitViewAdapter(getApplicationContext(),new ArrayList<>(commit_response.subList(0,Integer.parseInt(commit_new)))));
                         }
                     }
                 }
