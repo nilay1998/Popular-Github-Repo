@@ -10,6 +10,6 @@ Based on the number of forks on each repo, I have sorted and displayed then on t
 
 ## Screenshots
 
-<img src="Screenshots/Screenshot1.png" width="250" />
-<img src="Screenshots/Screenshot2.png" width="250" />
-<img src="Screenshots/Screenshot3.png" width="250" />
+<img src="Screenshots/Screenshot_1.png" width="250" />
+<img src="Screenshots/Screenshot_2.png" width="250" />
+<img src="Screenshots/Screenshot_3.png" width="250" />
