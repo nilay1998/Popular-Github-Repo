@@ -6,7 +6,7 @@ Android application to find popular repositories of desired organization on gith
 ## Approach
 I have used the API https://api.github.com/orgs/:org/repos to list all repositories of an organization. You can find its documentation [here](https://developer.github.com/v3/repos/#list-organization-repositories).
 
-Based on the number of forks on each repo, I have sorted and displayed then on the activity using RecyclerView. User can tap on each RecyclerView item to find the top Committes on that repository.
+Based on the number of forks on each repo, I have sorted and displayed then on the activity using RecyclerView. User can tap on each RecyclerView item to find the top committees on that repository.
 
 ## Screenshots
 This is the home page where you enter the organization's name and the number of repositories you wish to see. <br/>
