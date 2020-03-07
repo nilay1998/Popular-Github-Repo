@@ -38,35 +38,28 @@ public class Committee extends AppCompatActivity {
     LinearLayout middle;
     ProgressBar progressBar;
     RelativeLayout relativeLayout;
+    RecyclerView recyclerView;
+    EditText editText_commit;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_committee);
 
-        relativeLayout=findViewById(R.id.rl);
-        top=findViewById(R.id.top);
-        middle=findViewById(R.id.middle);
+        initviews();
 
         Intent intent=getIntent();
         String url = intent.getStringExtra("link");
         setTitle(intent.getStringExtra("name"));
 
-        progressBar=findViewById(R.id.prog11);
-        progressBar.setVisibility(View.INVISIBLE);
         url=url.substring(23);
         final String[] paths=url.split("/");
-        final RecyclerView recyclerView=findViewById(R.id.recyclerView_commit);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        final EditText editText_commit=findViewById(R.id.edittext_commit);
-        Button button=findViewById(R.id.search_commit);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 if(editText_commit.getText().toString()==null || editText_commit.getText().toString().isEmpty())
                     Toast.makeText(getApplicationContext(),"Enter Commiter Count",Toast.LENGTH_SHORT).show();
                 else
@@ -89,7 +82,6 @@ public class Committee extends AppCompatActivity {
                                 middle.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.GONE);
 
-                                Log.e("SUCCESS", "onResponse: "+response.body().get(0).getLogin());
                                 commit_response=new ArrayList<>(response.body());
                                 if(Integer.parseInt(editText_commit.getText().toString())<commit_response.size())
                                     commit_response=new ArrayList<>(commit_response.subList(0,Integer.parseInt(editText_commit.getText().toString())));
@@ -100,6 +92,7 @@ public class Committee extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<List<Commit>> call, Throwable t) {
                             progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
                             Log.e("HEYY", "onFailure: "+t.getMessage());
                         }
                     });
@@ -110,31 +103,27 @@ public class Committee extends AppCompatActivity {
         });
     }
 
+    private void initviews()
+    {
+        relativeLayout=findViewById(R.id.rl);
+        top=findViewById(R.id.top);
+        middle=findViewById(R.id.middle);
+
+        recyclerView=findViewById(R.id.recyclerView_commit);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        progressBar=findViewById(R.id.prog11);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        editText_commit=findViewById(R.id.edittext_commit);
+        button=findViewById(R.id.search_commit);
+    }
+
     private void startAnimation() {
         ViewPropertyAnimator viewPropertyAnimator = top.animate();
         viewPropertyAnimator.x(0f);
         viewPropertyAnimator.y(0f);
         viewPropertyAnimator.setDuration(1000);
-        viewPropertyAnimator.setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
         RelativeLayout.LayoutParams rLParams =
                 new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

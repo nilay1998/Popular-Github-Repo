@@ -40,30 +40,22 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout home;
     RelativeLayout relativeLayout;
     private ProgressBar progressBar;
+    LinearLayout linearLayout;
+    EditText editText_org;
+    EditText editText_repo;
+    Button search;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        home=findViewById(R.id.home);
-        relativeLayout=findViewById(R.id.relativeLayout);
-        final RecyclerView recyclerView=findViewById(R.id.recyclerView);
-        progressBar=findViewById(R.id.progressbar);
-        progressBar.setVisibility(View.INVISIBLE);
-        final LinearLayout linearLayout=findViewById(R.id.header);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        final EditText editText_org=findViewById(R.id.organization);
-        final EditText editText_repo=findViewById(R.id.no_of_repo);
-        Button search=findViewById(R.id.search);
-
-        Log.e("HELLO", "onCreate: "+editText_org.getText().toString());
+        initviews();
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("HELLO", "onCreate: "+editText_org.getText().toString());
-
                 final String org=editText_org.getText().toString();
                 final String repo=editText_repo.getText().toString();
 
@@ -102,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<List<Repo>> call, Throwable t) {
                             progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getApplicationContext(),"Try Again",Toast.LENGTH_SHORT).show();
                             Log.e("Failure", "onFailure: "+t.getMessage());
                         }
                     });
@@ -112,38 +105,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    void initviews()
+    {
+        home=findViewById(R.id.home);
+
+        relativeLayout=findViewById(R.id.relativeLayout);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView=findViewById(R.id.recyclerView);
+
+        progressBar=findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        linearLayout=findViewById(R.id.header);
+
+        editText_org=findViewById(R.id.organization);
+        editText_repo=findViewById(R.id.no_of_repo);
+
+        search=findViewById(R.id.search);
+    }
+
     private void startAnimation() {
         ViewPropertyAnimator viewPropertyAnimator = home.animate();
         viewPropertyAnimator.x(0f);
         viewPropertyAnimator.y(0f);
         viewPropertyAnimator.setDuration(1000);
-        viewPropertyAnimator.setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-
+        relativeLayout.removeView(home);
         RelativeLayout.LayoutParams rLParams =
                 new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rLParams.addRule(RelativeLayout.ALIGN_PARENT_START, 1);
-        relativeLayout.removeView(home);
         relativeLayout.addView(home,rLParams);
     }
 }
