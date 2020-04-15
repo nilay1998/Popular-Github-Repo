@@ -1,7 +1,7 @@
 # Popular-Github-Repo
  
 ## Introduction
-Android application to find popular repositories of an organization on github and for each repository the top committees.
+Android application to find popular repositories of an organization on github and for each repository the top committees .
 
 ## Approach
 I have used the API https://api.github.com/orgs/:org/repos to list all repositories of an organization. You can find its documentation [here](https://developer.github.com/v3/repos/#list-organization-repositories).
